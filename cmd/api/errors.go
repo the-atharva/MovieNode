@@ -9,6 +9,11 @@ func (app *application) logError(r *http.Request, err error) {
 	app.logger.Println(err)
 }
 
+func (app *application) editConflict(w http.ResponseWriter, r *http.Request) {
+	message := "unable to edit record due to edit conflict, please try again"
+	app.errorResponse(w, r, http.StatusConflict, message)
+}
+
 func (app *application) errorResponse(w http.ResponseWriter, r *http.Request, status int, message any) {
 	env := envelope{"error": message}
 	err := app.writeJSON(w, status, env, nil)
