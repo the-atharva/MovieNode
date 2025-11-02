@@ -1,1 +1,3 @@
 postgress: movienode :: pa$$word
+
+added type citext as extension to postgres. May have to do this in server too.
