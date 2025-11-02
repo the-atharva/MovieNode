@@ -26,7 +26,7 @@ func (app *application) failedValidationResponse(w http.ResponseWriter, r *http.
 func (app *application) logError(r *http.Request, err error) {
 	app.logger.PrintError(err, map[string]string{
 		"request_method": r.Method,
-		"request_url": r.URL.String(),
+		"request_url":    r.URL.String(),
 	})
 }
 
@@ -50,5 +50,3 @@ func (app *application) serverErrorResponse(w http.ResponseWriter, r *http.Reque
 	message := "The server encountered a problem & couldn't process your request"
 	app.errorResponse(w, r, http.StatusInternalServerError, message)
 }
-
-

@@ -13,13 +13,13 @@ import (
 	"time"
 )
 
-func (app *application) server() error{
+func (app *application) server() error {
 	srv := &http.Server{
-		Addr: fmt.Sprintf(":%d", app.config.port),
+		Addr:    fmt.Sprintf(":%d", app.config.port),
 		Handler: app.routes(),
 		// ErrorLog: log.New(logger, "", 0),
-		IdleTimeout: time.Minute,
-		ReadTimeout: 10 * time.Second,
+		IdleTimeout:  time.Minute,
+		ReadTimeout:  10 * time.Second,
 		WriteTimeout: 30 * time.Second,
 	}
 	shutdownError := make(chan error)
@@ -31,11 +31,11 @@ func (app *application) server() error{
 		app.logger.PrintInfo("shutting down server", map[string]string{"signal": s.String()})
 		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 		defer cancel()
-		shutdownError <-srv.Shutdown(ctx)
-	} ()
-	app.logger.PrintInfo("starting server", map[string]string {
+		shutdownError <- srv.Shutdown(ctx)
+	}()
+	app.logger.PrintInfo("starting server", map[string]string{
 		"addr": srv.Addr,
-		"env": app.config.env,
+		"env":  app.config.env,
 	})
 	err := srv.ListenAndServe()
 	if !errors.Is(err, http.ErrServerClosed) {

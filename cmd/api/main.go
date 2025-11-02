@@ -11,22 +11,22 @@ import (
 	"movienode.atharva.net/internal/jsonlog"
 
 	_ "github.com/lib/pq"
-) 
+)
 
 const version = "1.0.0"
 
 type config struct {
 	port int
-	env string
-	db struct {
-		dsn string
+	env  string
+	db   struct {
+		dsn          string
 		maxOpenConns int
 		maxIdleConns int
-		maxIdleTime string
+		maxIdleTime  string
 	}
 	limiter struct {
-		rps float64
-		burst int
+		rps     float64
+		burst   int
 		enabled bool
 	}
 }
@@ -56,7 +56,7 @@ func main() {
 	}
 	defer db.Close()
 	logger.PrintInfo("database connection pool established", nil)
-	app := &application {
+	app := &application{
 		config: cfg,
 		logger: logger,
 		models: data.NewModels(db),
@@ -79,7 +79,7 @@ func openDB(cfg config) (*sql.DB, error) {
 		return nil, err
 	}
 	db.SetConnMaxIdleTime(duration)
-	ctx, cancel := context.WithTimeout(context.Background(), 5 * time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	err = db.PingContext(ctx)
 	if err != nil {

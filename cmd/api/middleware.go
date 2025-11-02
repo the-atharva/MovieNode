@@ -12,11 +12,11 @@ import (
 
 func (app *application) rateLimit(next http.Handler) http.Handler {
 	type client struct {
-		limiter *rate.Limiter
+		limiter  *rate.Limiter
 		lastSeen time.Time
 	}
 	var (
-		mu sync.Mutex
+		mu      sync.Mutex
 		clients = make(map[string]*client)
 	)
 	go func() {
@@ -24,13 +24,13 @@ func (app *application) rateLimit(next http.Handler) http.Handler {
 			time.Sleep(time.Minute)
 			mu.Lock()
 			for ip, client := range clients {
-				if time.Since(client.lastSeen) > 3 * time.Minute {
+				if time.Since(client.lastSeen) > 3*time.Minute {
 					delete(clients, ip)
 				}
 			}
 			mu.Unlock()
 		}
-	} ()
+	}()
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if app.config.limiter.enabled {
 			ip, _, err := net.SplitHostPort(r.RemoteAddr)
@@ -41,8 +41,8 @@ func (app *application) rateLimit(next http.Handler) http.Handler {
 			mu.Lock()
 			if _, found := clients[ip]; !found {
 				clients[ip] = &client{
-					limiter: rate.NewLimiter(rate.Limit(app.config.limiter.rps), 
-					app.config.limiter.burst)}
+					limiter: rate.NewLimiter(rate.Limit(app.config.limiter.rps),
+						app.config.limiter.burst)}
 			}
 			clients[ip].lastSeen = time.Now()
 			if !clients[ip].limiter.Allow() {
@@ -63,7 +63,7 @@ func (app *application) recoverPanic(next http.Handler) http.Handler {
 				w.Header().Set("Connection", "close")
 				app.serverErrorResponse(w, r, fmt.Errorf("%s", err))
 			}
-		} ()
+		}()
 		next.ServeHTTP(w, r)
 	})
 }

@@ -5,16 +5,16 @@ import (
 	"fmt"
 	"net/http"
 
-	"movienode.atharva.net/internal/data"	
-	"movienode.atharva.net/internal/validator"	
+	"movienode.atharva.net/internal/data"
+	"movienode.atharva.net/internal/validator"
 )
 
 func (app *application) createMovieHandler(w http.ResponseWriter, r *http.Request) {
 	var input struct {
-		Title string `json:"title"`
-		Year int32 `json:"year"`
+		Title   string       `json:"title"`
+		Year    int32        `json:"year"`
 		Runtime data.Runtime `json:"runtime"`
-		Genres []string `json:"genres"`
+		Genres  []string     `json:"genres"`
 	}
 	err := app.readJSON(w, r, &input)
 	if err != nil {
@@ -22,10 +22,10 @@ func (app *application) createMovieHandler(w http.ResponseWriter, r *http.Reques
 		return
 	}
 	movie := &data.Movie{
-		Title: input.Title,
-		Year: input.Year,
+		Title:   input.Title,
+		Year:    input.Year,
 		Runtime: input.Runtime,
-		Genres: input.Genres,
+		Genres:  input.Genres,
 	}
 	v := validator.New()
 	if data.ValidateMovie(v, movie); !v.Valid() {
@@ -59,7 +59,7 @@ func (app *application) deleteMovieHandler(w http.ResponseWriter, r *http.Reques
 			app.notFoundResponse(w, r)
 		default:
 			app.serverErrorResponse(w, r, err)
-		
+
 		}
 		return
 	}
@@ -71,9 +71,9 @@ func (app *application) deleteMovieHandler(w http.ResponseWriter, r *http.Reques
 
 func (app *application) listMoviesHandler(w http.ResponseWriter, r *http.Request) {
 	var input struct {
-		Title string
+		Title  string
 		Genres []string
-	  data.Filters
+		data.Filters
 	}
 	v := validator.New()
 	qs := r.URL.Query()
@@ -83,7 +83,7 @@ func (app *application) listMoviesHandler(w http.ResponseWriter, r *http.Request
 	input.PageSize = app.readInt(qs, "page_size", 20, v)
 	input.Sort = app.readString(qs, "sort", "id")
 	input.SortSafeList = []string{"id", "title", "year", "runtime", "-id", "-title", "-year", "-runtime"}
-	if data.ValidateFilters(v, input.Filters);!v.Valid() {
+	if data.ValidateFilters(v, input.Filters); !v.Valid() {
 		app.failedValidationResponse(w, r, v.Errors)
 		return
 	}
@@ -103,18 +103,18 @@ func (app *application) showMovieHandler(w http.ResponseWriter, r *http.Request)
 	if err != nil {
 		app.notFoundResponse(w, r)
 		return
-	} 
-  movie, err := app.models.Movies.Get(id)
+	}
+	movie, err := app.models.Movies.Get(id)
 	if err != nil {
 		switch {
-			case errors.Is(err, data.ErrRecordNotFound):
-				app.notFoundResponse(w, r)
-			default:
-				app.serverErrorResponse(w, r, err)
+		case errors.Is(err, data.ErrRecordNotFound):
+			app.notFoundResponse(w, r)
+		default:
+			app.serverErrorResponse(w, r, err)
 		}
 		return
 	}
-	err = app.writeJSON(w, http.StatusOK, envelope{"movie":movie}, nil)
+	err = app.writeJSON(w, http.StatusOK, envelope{"movie": movie}, nil)
 	if err != nil {
 		app.serverErrorResponse(w, r, err)
 	}
@@ -130,18 +130,18 @@ func (app *application) updateMovieHandler(w http.ResponseWriter, r *http.Reques
 	movie, err := app.models.Movies.Get(id)
 	if err != nil {
 		switch {
-			case errors.Is(err, data.ErrRecordNotFound):
-				app.notFoundResponse(w, r)
-			default:
-				app.serverErrorResponse(w, r, err)
+		case errors.Is(err, data.ErrRecordNotFound):
+			app.notFoundResponse(w, r)
+		default:
+			app.serverErrorResponse(w, r, err)
 		}
 		return
 	}
 	var input struct {
-		Title *string `json:"title"`
-		Year *int32 `json:"year"`
+		Title   *string       `json:"title"`
+		Year    *int32        `json:"year"`
 		Runtime *data.Runtime `json:"runtime"`
-		Genres []string `json:"genres"`
+		Genres  []string      `json:"genres"`
 	}
 	err = app.readJSON(w, r, &input)
 	if err != nil {
