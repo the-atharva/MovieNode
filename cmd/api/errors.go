@@ -5,6 +5,11 @@ import (
 	"net/http"
 )
 
+func (app *application) authenticationRequiredResponse(w http.ResponseWriter, r *http.Request) {
+	message := "you must be authenticated to acess this resource"
+	app.errorResponse(w, r, http.StatusUnauthorized, message)
+}
+
 func (app *application) editConflictResponse(w http.ResponseWriter, r *http.Request) {
 	message := "unable to edit record due to edit conflict, please try again"
 	app.errorResponse(w, r, http.StatusConflict, message)
@@ -21,6 +26,11 @@ func (app *application) errorResponse(w http.ResponseWriter, r *http.Request, st
 
 func (app *application) failedValidationResponse(w http.ResponseWriter, r *http.Request, errors map[string]string) {
 	app.errorResponse(w, r, http.StatusUnprocessableEntity, errors)
+}
+
+func (app *application) inactiveAccountResponse(w http.ResponseWriter, r *http.Request) {
+	message := "your user account must be activated to access this resource"
+	app.errorResponse(w, r, http.StatusForbidden, message)
 }
 
 func (app *application) invaliedAuthenticationTokenResponse(w http.ResponseWriter, r *http.Request) {
