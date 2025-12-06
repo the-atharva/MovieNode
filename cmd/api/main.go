@@ -58,7 +58,7 @@ func main() {
 	var cfg config
 	flag.IntVar(&cfg.port, "port", 4000, "API server port")
 	flag.StringVar(&cfg.env, "env", "development", "Environemt (development|staging|production)")
-	flag.StringVar(&cfg.db.dsn, "db-dsn", os.Getenv("MOVIENODE_DB_DSN"), "postgreSQL DSN")
+	flag.StringVar(&cfg.db.dsn, "db-dsn", "", "postgreSQL DSN")
 	flag.IntVar(&cfg.db.maxOpenConns, "db-max-open-conns", 25, "postgreSQL max open connections")
 	flag.IntVar(&cfg.db.maxIdleConns, "db-max-idle-conns", 25, "postgreSQL max idle connections")
 	flag.StringVar(&cfg.db.maxIdleTime, "db-max-idle-time", "15m", "postgreSQL max idle time")
@@ -68,7 +68,7 @@ func main() {
 	flag.StringVar(&cfg.smtp.host, "smtp-host", "sandbox.smtp.mailtrap.io", "SMTP host")
 	flag.IntVar(&cfg.smtp.port, "smtp-port", 587, "SMTP Port")
 	flag.StringVar(&cfg.smtp.username, "smtp-username", "a0956beb9a1e37", "SMTP username")
-	flag.StringVar(&cfg.smtp.password, "smtp-password", "7929e4a9da9090", "SMTP password")
+	flag.StringVar(&cfg.smtp.password, "smtp-password", "", "SMTP password")
 	flag.StringVar(&cfg.smtp.sender, "smtp-sender", "Movienode<no-reply@movienode.atharva.net>", "SMTP sender")
 	flag.Func("cors-trusted-origins", "Trusted CORS origins (space separated)", func(val string) error {
 		cfg.cors.trustedOrigins = strings.Fields(val)
