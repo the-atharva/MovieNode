@@ -1,0 +1,23 @@
+[Unit]
+Description=Movienode API service
+
+After=postgresql.service
+After=network-online.target
+Wants=network-online.target
+
+StartLimitIntervalSec=600
+StartLimitBurst=5
+
+[Service]
+Type=exec
+User=movienode
+Group=movienode
+EnvironmentFile=/etc/environment
+WorkdingDirectory=/home/movienode
+ExecStart=/home/movienode/api -port=4000 -db-dsn=${MOVIENODE_DB_DSN} -smtp-password=${SMTP_PASSWORD} -env=production 
+
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
