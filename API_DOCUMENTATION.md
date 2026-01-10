@@ -304,23 +304,6 @@ This document lists all API endpoints, their methods, request headers, request/q
     }
     ```
 - Error responses: `422` when email not found or account not activated, `500` server error
-
-## GET /debug/vars
-- Method: GET
-- Headers: none
-- Description: Exposes expvar metrics
-- Success response: `200 OK` with JSON body from expvar
-
----
-
-Error envelope format (all errors):
-
-```json
-{
-  "error": <string | { "field": "message", ... }>
-}
-```
-
 ---
 
 Notes:
